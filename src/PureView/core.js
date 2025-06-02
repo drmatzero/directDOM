@@ -90,6 +90,7 @@ export function createElement(type, props = {}, ...children) {
 /*================================================================================== */
 // --- Global State and Re-render Mechanism ---
 let currentRenderingComponent = null;
+const componentDomCache = new WeakMap();
 
 const componentStates = new WeakMap();
 const componentEffects = new WeakMap();
@@ -220,7 +221,7 @@ export function useState(initialValue) {
 
   const componentData = componentStatesMap.get(component);
   const statesArray = componentData.states;
-  const currentHookIndex = componentData.hookIndex++; // Increment untuk pemanggilan hook berikutnya
+  const currentHookIndex = componentData.hookIndex++;
 
   if (statesArray[currentHookIndex] === undefined) {
     statesArray[currentHookIndex] = initialValue;
@@ -230,9 +231,9 @@ export function useState(initialValue) {
     const finalValue = typeof newValue === "function" ? newValue(statesArray[currentHookIndex]) : newValue;
     if (statesArray[currentHookIndex] !== finalValue) {
       statesArray[currentHookIndex] = finalValue;
-      // Reset hook index sebelum re-render
       componentData.hookIndex = 0;
-      scheduleRerender();
+      console.log("setState dipanggil, me-re-render komponen:", component);
+      reRenderComponent(component); // Panggil reRenderComponent dengan komponen saat ini
     }
   };
 
@@ -289,9 +290,16 @@ export function createComponent(renderFunction) {
   return function (props, children) {
     console.log("createComponent: component rendering", renderFunction.name || "AnonymousComponent");
     const prevRenderingComponent = currentRenderingComponent;
-    currentRenderingComponent = renderFunction; // Set ke fungsi render itu sendiri
+    currentRenderingComponent = renderFunction;
     const element = renderFunction(props, children);
     currentRenderingComponent = prevRenderingComponent;
+
+    // Simpan elemen DOM root, props, dan children
+    element._componentFunction = renderFunction;
+    element._componentProps = props;
+    element._componentChildren = children;
+    componentDomCache.set(renderFunction, element);
+
     runEffects();
     return element;
   };
@@ -318,3 +326,29 @@ export function scheduleRerender() {
     console.log("scheduleRerender gagal: rootDomElement atau rootComponentFunction tidak siap.");
   }
 }
+/*==============================================================================*/
+/*=========================recodering chache Map//====================================*/
+/*===============================================================================*/
+// ... bagian atas core.js ...
+
+function reRenderComponent(componentFunction) {
+  const oldElement = componentDomCache.get(componentFunction);
+  console.log("reRenderComponent: oldElement", oldElement); // Tambahkan log ini
+  console.log("reRenderComponent: componentFunction", componentFunction); // Tambahkan log ini
+  if (oldElement && oldElement.parentNode) {
+    const props = oldElement._componentProps || {};
+    const children = oldElement._componentChildren || [];
+
+    const prevCurrentRenderingComponent = currentRenderingComponent;
+    currentRenderingComponent = componentFunction;
+    const newElement = componentFunction(props, children);
+    currentRenderingComponent = prevCurrentRenderingComponent;
+    console.log("reRenderComponent: newElement", newElement);
+
+    oldElement.parentNode.replaceChild(newElement, oldElement);
+    componentDomCache.set(componentFunction, newElement);
+  } else {
+    console.warn("Tidak dapat me-re-render komponen:", componentFunction);
+  }
+}
+// ... bagian bawah core.js ...

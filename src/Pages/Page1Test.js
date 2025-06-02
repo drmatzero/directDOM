@@ -1,27 +1,30 @@
-// src/Pages/Page1Test.js
-// src/Pages/Page1Test.js
-// src/Pages/Page1Test.js
 import { createElement, createComponent, useState } from "../PureView/core";
-import { Link } from "../PureView/router"; // Pastikan Anda memiliki komponen Link
+import { Link } from "../PureView/router";
+import { ComponentA } from "./ComponentA";
+import { ComponentB } from "./ComponentB";
 
 export const Page1Test = createComponent(() => {
-  //console.log("Page1Test: currentRenderingComponent sebelum useState:", currentRenderingComponent);
-  const [showText, setShowText] = useState(false);
+  const [displayedComponent, setDisplayedComponent] = useState(ComponentA); // Inisialisasi dengan fungsi
 
-  const handleClick = () => {
-    console.log("Tombol di Page1Test diklik. showText sebelum:", showText);
-    setShowText(!showText);
-    console.log("Tombol di Page1Test diklik. showText sesudah:", !showText);
+  const showComponentA = () => {
+    console.log("Tombol A diklik");
+    setDisplayedComponent(() => ComponentA); // Set state dengan fungsi
   };
 
-  console.log("Page1Test dirender, showText:", showText);
+  const showComponentB = () => {
+    console.log("Tombol B diklik");
+    setDisplayedComponent(() => ComponentB); // Set state dengan fungsi
+  };
+
+  console.log("Page1Test dirender, displayedComponent:", displayedComponent);
 
   return createElement(
     "div",
     {},
-    createElement("h1", {}, "Page Test"),
-    createElement("button", { onClick: handleClick }, showText ? "Sembunyikan Teks" : "Tampilkan Teks"),
-    showText && createElement("div", {}, "Teks ini ditampilkan!"),
+    createElement("h1", {}, "Page Test dengan Komponen"),
+    createElement("div", { style: { marginTop: "20px" } }, createElement(displayedComponent)),
+    createElement("div", {}, createElement("button", { onClick: showComponentA }, "Tampilkan Komponen A"), createElement("button", { onClick: showComponentB, style: { marginLeft: "10px" } }, "Tampilkan Komponen B")),
+    /*createElement("div", { style: { marginTop: "20px" } }, createElement(displayedComponent)), */
     createElement("div", { style: { marginTop: "20px" } }, createElement(Link, { to: "/", children: "Kembali ke Welcome" }), createElement("span", {}, " | "), createElement(Link, { to: "/thankyou", children: "Pergi ke Thank You" }))
   );
 });
