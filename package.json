@@ -1,14 +1,29 @@
 {
-  "name": "purview-app",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "directdom",
+  "version": "0.1.0",
+  "description": "Framework UI JavaScript minimalis untuk membangun Single Page Applications (SPA) dengan kontrol DOM langsung.",
+  "main": "dist/directdom.umd.js",
+  "module": "dist/directdom.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/drmatzero/directDOM.git"  // <-- Ini adalah placeholder
+  },
+  "keywords": ["dom", "spa", "vanilla-js", "framework", "ui", "lightweight", "reactive"],
+  "author": "Rahmad Gunawan Cahyono",
+  "license": "MIT",
   "devDependencies": {
-    "vite": "^6.3.5"
+    "vite": "^5.0.0"
   }
 }
