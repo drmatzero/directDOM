@@ -1,29 +1,84 @@
 DirectDOM
-Sebuah framework UI JavaScript minimalis yang dirancang untuk membangun Single Page Applications (SPA) dengan performa tinggi dan kontrol DOM langsung. Dibangun dengan fokus pada efisiensi dan kesederhanaan.
+A minimalist JavaScript UI framework designed to build Single Page Applications (SPA) with high performance and direct DOM control. Built with a focus on efficiency and simplicity.
 
-Status Proyek
-DirectDOM saat ini dalam tahap pengembangan aktif dan pengujian internal. Kami berencana untuk segera mempublikasikannya ke NPM.
+Project Status
+DirectDOM is currently under active development and internal testing. This is our first public release.
 
-Fitur Utama
-Hooks Reaktif: useState, useEffect, useRef untuk manajemen state dan efek samping yang intuitif.
+Installation
+You can install DirectDOM using NPM or Yarn:
 
-Routing Sederhana: Komponen Router dan Link, serta fungsi setRoutes dan navigateTo untuk navigasi SPA yang bersih.
+npm install directdom
+# or
+yarn add directdom
 
-HTML Element Helpers: Fungsi pembantu untuk membuat elemen DOM (div, p, h1, button, dll.) dengan sintaks yang ringkas.
+Usage
+Once installed, you can import and use DirectDOM functions in your project:
 
-Komponen UI Built-in: Komponen seperti Modal dan SVGLogo yang siap pakai.
+// main.js in your project
 
-Ukuran Bundel Kecil: Didesain agar sangat ringan dan cepat.
+import { createElement, createComponent, useState, useEffect, div, p, button, Router, setRoutes, Link } from 'directdom';
 
-Instalasi dan Penggunaan Lokal
-Untuk menguji DirectDOM secara lokal atau menjalankan aplikasi contoh kami:
+// Define a component
+const MyCounter = createComponent(() => {
+  const [count, setCount] = useState(0);
+
+  return div(
+    {},
+    p({}, `Count: ${count}`),
+    button({ onClick: () => setCount(count + 1) }, 'Add')
+  );
+});
+
+// Define pages
+const HomePage = createComponent(() => {
+  return div(
+    {},
+    h1({}, 'Welcome!'),
+    createElement(MyCounter),
+    Link({ to: '/about' }, 'About')
+  );
+});
+
+const AboutPage = createComponent(() => {
+  return div(
+    {},
+    h1({}, 'About Us Page'),
+    Link({ to: '/' }, 'Back to Home')
+  );
+});
+
+// Set up routes
+setRoutes({
+  '/': HomePage,
+  '/about': AboutPage
+});
+
+// Mount the application to the root element in HTML
+const appRoot = document.getElementById('app-root');
+if (appRoot) {
+  mountComponent(appRoot, { render: () => createElement(Router) });
+}
+
+Key Features
+Reactive Hooks: useState, useEffect, useRef for intuitive state and side-effect management.
+
+Simple Routing: Router and Link components, along with setRoutes and navigateTo functions for clean SPA navigation.
+
+HTML Element Helpers: Helper functions for creating DOM elements (div, p, h1, button, etc.) with concise syntax.
+
+Built-in UI Components: Components like Modal and SVGLogo ready for use.
+
+Small Bundle Size: Designed to be extremely lightweight and fast.
+
+Local Development
+To run the DirectDOM development project or test its build locally:
 
 Clone Repository:
 
-git clone https://github.com/[USERNAME_GITHUB_ANDA]/[NAMA_REPOS_ANDA_DI_GITHUB].git
-cd [NAMA_REPOS_ANDA_DI_GITHUB]
+git clone https://github.com/drmatzero/directDOM.git
+cd directDOM
 
-Instal Dependensi:
+Install Dependencies:
 
 npm install
 
@@ -31,25 +86,20 @@ Build Library:
 
 npm run build
 
-Hasil build akan ada di folder dist/ (misalnya directdom.es.js, directdom.umd.js).
+The build output will be in the dist/ folder (directdom.es.js, directdom.umd.js).
 
-Jalankan Aplikasi Contoh (Development Mode):
+Run Example Application (Development Mode):
+If you have an example/ or app-template/ folder that uses this library, you can run it with npm run dev in that application's project folder.
 
-npm run dev
+Future Plans
+We have big visions for DirectDOM, including:
 
-Ini akan membuka aplikasi contoh yang menggunakan DirectDOM di browser Anda.
+Developing a variety of ready-to-use web templates built entirely with DirectDOM.
 
-Rencana ke Depan
-Kami memiliki visi besar untuk DirectDOM, termasuk:
+Creating a "no-code web builder" powered by DirectDOM, enabling anyone to create custom websites without writing code.
 
-Publikasi NPM: Membuat DirectDOM tersedia secara publik melalui NPM untuk kemudahan instalasi di proyek-proyek lain.
+Contributions
+We welcome contributions! If you're interested in helping, please open an issue or pull request on our GitHub repository.
 
-Ekosistem Template: Mengembangkan dan merilis berbagai web template siap pakai yang dibangun sepenuhnya dengan DirectDOM.
-
-Web Builder Tanpa Coding: Merancang dan membangun web builder visual yang memungkinkan siapa pun membuat website kustom tanpa menulis kode, ditenagai oleh DirectDOM.
-
-Kontribusi
-Kami menyambut kontribusi! Jika Anda tertarik untuk membantu, silakan buka issue atau pull request.
-
-Lisensi
-DirectDOM dirilis di bawah Lisensi MIT. Lihat file LICENSE untuk detailnya.
+License
+DirectDOM is released under the MIT License.
