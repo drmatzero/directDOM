@@ -1,0 +1,33 @@
+name: Publish Package to NPM
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://npmjs.org'
+
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Publish to NPM
+        run: npm publish --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
