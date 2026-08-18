@@ -10,7 +10,7 @@ You can install DirectDOM Lite using NPM:
 npm install directdom-lite
 ```
 
-## Usage
+## Usage 
 import { div, h2, p, button, section } from 'directdom-lite';
 import { createSignal } from 'directdom-lite';
 
